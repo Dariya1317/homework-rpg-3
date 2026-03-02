@@ -29,7 +29,7 @@ public class Joker extends BasicEnemy{
         super.applyDamage(amount);
         
         if (random.nextInt(100) < 10) {
-            System.out.println("Joker laughs like crazy");
+            System.out.println("Joker laughs like a madman");
         }
     }
     

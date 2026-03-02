@@ -29,39 +29,21 @@ public final class BattleEngine {
 
     public EncounterResult runEncounter(List<Combatant> teamA, List<Combatant> teamB) {
         EncounterResult result = new EncounterResult();
-    
-    List<Combatant> aTeam = new ArrayList<>(teamA);
-    List<Combatant> bTeam = new ArrayList<>(teamB);
-    
-    int round = 0;
-    
-    while (!aTeam.isEmpty() && !bTeam.isEmpty()) {
-        round++;
-        result.addLog("\n=== Round " + round + " ===");
         
-        result.addLog("Team A attacks:");
-        for (Combatant attacker : new ArrayList<>(aTeam)) {
-            if (bTeam.isEmpty()) break;
-            
-            Combatant target = bTeam.get(0);
-            int damage = attacker.getAttackPower();
-            target.takeDamage(damage);
-            
-            result.addLog("  " + attacker.getName() + " hits " + target.getName() + 
-                         " for " + damage + " damage");
-            
-            if (!target.isAlive()) {
-                result.addLog("  X " + target.getName() + " died");
-                bTeam.remove(0);
-            }
-        }
+        List<Combatant> aTeam = new ArrayList<>(teamA);
+        List<Combatant> bTeam = new ArrayList<>(teamB);
         
-        if (!bTeam.isEmpty()) {
-            result.addLog("Team B attacks:");
-            for (Combatant attacker : new ArrayList<>(bTeam)) {
-                if (aTeam.isEmpty()) break;
+        int round = 0;
+        
+        while (!aTeam.isEmpty() && !bTeam.isEmpty()) {
+            round++;
+            result.addLog("\n=== Round " + round + " ===");
+            
+            result.addLog("Team A attacks:");
+            for (Combatant attacker : new ArrayList<>(aTeam)) {
+                if (bTeam.isEmpty()) break;
                 
-                Combatant target = aTeam.get(0);
+                Combatant target = bTeam.get(0);
                 int damage = attacker.getAttackPower();
                 target.takeDamage(damage);
                 
@@ -70,26 +52,44 @@ public final class BattleEngine {
                 
                 if (!target.isAlive()) {
                     result.addLog("  X " + target.getName() + " died");
-                    aTeam.remove(0);
+                    bTeam.remove(0);
                 }
             }
+        
+            if (!bTeam.isEmpty()) {
+                result.addLog("Team B attacks:");
+                for (Combatant attacker : new ArrayList<>(bTeam)) {
+                    if (aTeam.isEmpty()) break;
+                    
+                    Combatant target = aTeam.get(0);
+                    int damage = attacker.getAttackPower();
+                    target.takeDamage(damage);
+                    
+                    result.addLog("  " + attacker.getName() + " hits " + target.getName() + 
+                                 " for " + damage + " damage");
+                    
+                    if (!target.isAlive()) {
+                        result.addLog("  X " + target.getName() + " died");
+                        aTeam.remove(0);
+                    }
+                }
+            }
+            
+            result.addLog("Status: Heroes (" + aTeam.size() + "), Enemies (" + bTeam.size() + ")");
         }
         
-        result.addLog("Status: Heroes (" + aTeam.size() + "), Enemies (" + bTeam.size() + ")");
-    }
-    
-    if (aTeam.isEmpty() && bTeam.isEmpty()) {
-        result.setWinner("Draw - everyone died");
-    } else if (aTeam.isEmpty()) {
-        result.setWinner("Enemies");
-    } else {
-        result.setWinner("Heroes");
-    }
-    
-    result.setRounds(round);
-    result.addLog("\n=== Battle finished ===");
-    result.addLog("Winner: " + result.getWinner());
-    
-    return result;
+        if (aTeam.isEmpty() && bTeam.isEmpty()) {
+            result.setWinner("Draw - everyone died");
+        } else if (aTeam.isEmpty()) {
+            result.setWinner("Enemies");
+        } else {
+            result.setWinner("Heroes");
+        }
+        
+        result.setRounds(round);
+        result.addLog("\n=== Battle finished ===");
+        result.addLog("Winner: " + result.getWinner());
+        
+        return result;
     }
 }
